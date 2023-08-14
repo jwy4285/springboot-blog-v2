@@ -25,6 +25,7 @@ public class BoardRepositoryTest {
         boardRepository.save(board); // insert 자동으로 실행됨
         // 디비데이터와 동기화됨
         System.out.println(board.getId());
+        // 테스트 끝나면 항상 롤백됨
 
     }
 

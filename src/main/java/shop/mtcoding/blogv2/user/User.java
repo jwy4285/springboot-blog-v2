@@ -34,6 +34,7 @@ public class User {
 
     @Column(nullable = false, length = 20)
     private String email;
+
     @CreationTimestamp
     private Timestamp createdAt;
 
@@ -45,5 +46,4 @@ public class User {
         this.email = email;
         this.createdAt = createdAt;
     }
-
 }
