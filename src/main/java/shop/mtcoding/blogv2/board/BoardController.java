@@ -1,15 +1,32 @@
 package shop.mtcoding.blogv2.board;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import shop.mtcoding.blogv2.user.User;
 
 @Controller
 public class BoardController {
     @Autowired
     private BoardService boardService;
+
+    // localhost:8080?page=1&keyword=바나나
+    @GetMapping("/")
+    public String main(@RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
+        Page<Board> boardPG = boardService.게시물목록보기();
+        request.setAttribute("boardPG", boardPG);
+        request.setAttribute("prevPage", boardPG.getNumber() - 1);
+        request.setAttribute("nexPage", boardPG.getNumber() + 1);
+        return "index";
+    }
 
     @GetMapping("/board/saveForm")
     public String saveForm() {

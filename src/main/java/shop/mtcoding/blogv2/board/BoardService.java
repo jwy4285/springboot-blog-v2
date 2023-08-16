@@ -1,6 +1,12 @@
 package shop.mtcoding.blogv2.board;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blogv2.user.User;
@@ -18,5 +24,10 @@ public class BoardService {
                 .user(User.builder().id(sessionUserId).build())
                 .build();
         boardRepository.save(board);
+    }
+
+    public Page<Board> 게시물목록보기() {
+        Pageable pageable = PageRequest.of(0, 3, Sort.Direction.DESC, "id");
+        return boardRepository.findAll(pageable);
     }
 }
