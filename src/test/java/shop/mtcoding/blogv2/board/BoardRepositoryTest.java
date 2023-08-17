@@ -1,6 +1,9 @@
 package shop.mtcoding.blogv2.board;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,19 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Test
+    void deleteById_test() {
+        boardRepository.deleteById(5);
+    } // rollback
+
+    @Test
+    public void findById_test() {
+        Optional<Board> boardOp = boardRepository.findById(5);
+        if (boardOp.isPresent()) { // Board가 존재하면!! (null 안전성)
+            System.out.println("테스트 : board가 있습니다");
+        }
+    }
 
     @Test
     public void findAll_paging_test() throws JsonProcessingException {
@@ -51,7 +67,8 @@ public class BoardRepositoryTest {
 
         // Lazy Loading - 지연로딩
         // 연관된 객체에 null을 참조하려고 하면 조회가 일어남
-        System.out.println(boardList.get(0).getUser().getUsername()); // null -> ssar
+        // System.out.println(boardList.get(0).getUser().getUsername()); // null -> ssar
+        // System.out.println(boardList.get(3).getUser().getUsername()); // null -> ssar
 
     }
 
