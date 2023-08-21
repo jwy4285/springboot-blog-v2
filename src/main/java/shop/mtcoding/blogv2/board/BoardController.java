@@ -28,7 +28,7 @@ public class BoardController {
         // System.out.println("테스트1 : " + boardService.게시물수정하기(id).getTitle());
         // System.out.println("테스트1 : " + boardService.게시물수정하기(id).getContent());
         request.setAttribute("board", board);
-        return "board/updateForm";
+        return "board/updateForm";  
     }
 
     @GetMapping("/board/{id}") // 보드 상세보기
