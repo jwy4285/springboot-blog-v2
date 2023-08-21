@@ -20,8 +20,8 @@ public class UserController {
     @Autowired
     private HttpSession session;
 
-    // 브라우저 GET /logout 요청을함 (request 1)
-    // 서버는 / 주소를 응답의 헤더에 담음(Location), 상태코드 302
+    // 브라우저 GET /logout 요청을 함 (request 1)
+    // 서버는 / 주소를 응답의 헤더에 담음 (Location), 상태코드 302
     // 브라우저는 GET / 로 재요청을 함 (request 2)
     // index 페이지 응답받고 렌더링함
     @GetMapping("/logout")
@@ -30,7 +30,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    // MVC중에 C - V만 받음
+    // C - V
     @GetMapping("/joinForm")
     public String joinForm() {
         return "user/joinForm";
@@ -39,20 +39,20 @@ public class UserController {
     // M - V - C
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO joinDTO) {
-        userService.회원가입(joinDTO); // 회원가입 로직을 위임함 서비스한테
+        userService.회원가입(joinDTO);
         return "user/loginForm"; // persist 초기화
     }
 
     @GetMapping("/loginForm")
-    public String login() {
+    public String loginForm() {
         return "user/loginForm";
     }
 
     @PostMapping("/login")
-    public @ResponseBody String login(UserRequest.loginDTO loginDto) {
-        User sessionUser = userService.로그인(loginDto);
+    public @ResponseBody String login(UserRequest.LoginDTO loginDTO) {
+        User sessionUser = userService.로그인(loginDTO);
         if (sessionUser == null) {
-            return Script.back("로그인실패");
+            return Script.back("로그인 실패");
         }
         session.setAttribute("sessionUser", sessionUser);
         return Script.href("/");

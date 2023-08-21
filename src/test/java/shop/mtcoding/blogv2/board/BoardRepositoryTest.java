@@ -3,8 +3,6 @@ package shop.mtcoding.blogv2.board;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,39 +16,64 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.blogv2.user.User;
 
-@DataJpaTest // 모든 Repository, EntityManger
+@DataJpaTest // 모든 Repository, EntityManager
 public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
 
     @Test
-    void deleteById_test() {
-        boardRepository.deleteById(5);
+    public void deleteById_test() {
+        try {
+            boardRepository.deleteById(6);
+        } catch (Exception e) {
+            System.out.println("괜찮아");
+        }
+
     } // rollback
 
     @Test
+    public void mFindById_test() {
+        boardRepository.mFindById(1);
+    }
+
+    @Test
+    public void mFindByIdJoinUserAndReplies_test(){
+        Board board = boardRepository.mFindByIdJoinRepliesInUser(1).get();
+        System.out.println("Board : id : " + board.getId());
+        System.out.println("Board : id : " + board.getTitle());
+        System.out.println("Board : id : " + board.getContent());
+        System.out.println("Board : id : " + board.getCreatedAt());
+        System.out.println("==========================================");
+        System.out.println("Board in User: username: " + board.getUser().getUsername());
+        System.out.println("=============================================");
+        board.getReplies().stream().forEach(r -> {
+             System.out.println("board in replies : id : " + r.getId());
+             System.out.println("board in replies : comment : " + r.getUser().getId());
+             System.out.println("board in replies : username : " + r.getUser().getUsername());
+        });
+       
+    }
+
+    @Test
     public void findById_test() {
-        Optional<Board> boardOp = boardRepository.findById(5);
-        if (boardOp.isPresent()) { // Board가 존재하면!! (null 안전성)
-            System.out.println("테스트 : board가 있습니다");
-        }
+        Optional<Board> boardOP = boardRepository.findById(1);
     }
 
     @Test
     public void findAll_paging_test() throws JsonProcessingException {
         Pageable pageable = PageRequest.of(0, 3, Sort.Direction.DESC, "id");
         Page<Board> boardPG = boardRepository.findAll(pageable);
+
         ObjectMapper om = new ObjectMapper();
-
-        // ObjectMapper는 boardPG객체의 getter를 호출하면서 json을 만든다
+        // ObjectMapper는 boardPG객체의 getter를 호출하면서 json을 만든다.
         String json = om.writeValueAsString(boardPG); // 자바객체를 JSON으로 변환
-
+        System.out.println(json);
     }
 
     @Test
-    public void mfindAll_test() {
-        boardRepository.findAll();
+    public void mFindAll_test() {
+        boardRepository.mFindAll();
     }
 
     @Test
@@ -59,17 +82,14 @@ public class BoardRepositoryTest {
         List<Board> boardList = boardRepository.findAll();
         System.out.println("조회 후 : Lazy");
         // 행 : 5개 -> 객체 : 5개
-        // 각행 : Board (id=1, title=제목1, content=내용1, created_at=날짜, User(id=1)) 레이지로
-        // 땡겨올때
-        // 레이지는 프라이머리키로만 땡겨옴
-        System.out.println(boardList.get(0).getId()); // 1번 (조회 x)
-        System.out.println(boardList.get(0).getUser().getId()); // 1번 (조회 x)
+        // 각행 : Board (id=1, title=제목1, content=내용1, created_at=날짜, User(id=1))
+        System.out.println(boardList.get(0).getId()); // 1번 (조회 X)
+        System.out.println(boardList.get(0).getUser().getId()); // 1번 (조회 X)
 
         // Lazy Loading - 지연로딩
-        // 연관된 객체에 null을 참조하려고 하면 조회가 일어남
-        // System.out.println(boardList.get(0).getUser().getUsername()); // null -> ssar
-        // System.out.println(boardList.get(3).getUser().getUsername()); // null -> ssar
-
+        // 연관된 객체에 null을 참조하려고 하면 조회가 일어남 (조회 O)
+        System.out.println(boardList.get(0).getUser().getUsername()); // null -> ssar
+        System.out.println(boardList.get(3).getUser().getUsername());
     }
 
     @Test
@@ -85,8 +105,5 @@ public class BoardRepositoryTest {
         boardRepository.save(board); // insert 자동으로 실행됨
         // 디비데이터와 동기화됨
         System.out.println(board.getId());
-        // 테스트 끝나면 항상 롤백됨
-
     }
-
 }

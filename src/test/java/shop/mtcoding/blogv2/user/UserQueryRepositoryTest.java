@@ -48,10 +48,9 @@ public class UserQueryRepositoryTest {
         // JPA update 알고리즘
         // 1. 업데이트 할 객체를 영속화
         // 2. 객체 상태 변경
-        // 3. em.flush or @Transactional 정상 종료 비정상으로 종료되면 롤백됨 테스트는 끝나면 항상 롤백됨
+        // 3. em.flush() or @Transactional 정상 종료
         User user = userQueryRepository.findById(1);
         user.setEmail("ssarmango@nate.com");
-        em.flush(); // 통신으로 버퍼를 데이터로 쏘는것
-        // rollback
-    }
+        em.flush();
+    } // rollback
 }

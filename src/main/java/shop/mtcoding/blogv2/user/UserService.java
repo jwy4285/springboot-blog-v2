@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.blogv2.user.UserRequest.JoinDTO;
+import shop.mtcoding.blogv2.user.UserRequest.LoginDTO;
 import shop.mtcoding.blogv2.user.UserRequest.UpdateDTO;
-import shop.mtcoding.blogv2.user.UserRequest.loginDTO;
 
 // 핵심로직 처리, 트랜잭션 관리, 예외 처리
 @Service
@@ -25,11 +25,10 @@ public class UserService {
         userRepository.save(user); // em.persist
     }
 
-    // 트랜잭션안하는이유 : 쓰기가아니라서
-    public User 로그인(loginDTO loginDTO) {
+    public User 로그인(LoginDTO loginDTO) {
         User user = userRepository.findByUsername(loginDTO.getUsername());
 
-        // 1. 유저 네임 검증
+        // 1. 유저네임 검증
         if (user == null) {
             return null;
         }
@@ -55,8 +54,7 @@ public class UserService {
         // 2. 변경
         user.setPassword(updateDTO.getPassword());
 
-        return null;
-        // 3. flush
-    }
+        return user;
+    } // 3. flush
 
 }
