@@ -53,7 +53,7 @@ public class BoardController {
     @GetMapping("/test/board/{id}")
     public @ResponseBody Board testDetail(@PathVariable Integer id) {
         Board board = boardRepository.mFindByIdJoinRepliesInUser(id).get();
-        return board;
+        return board; 
     }
 
     // localhost:8080?page=1&keyword=바나나
@@ -88,7 +88,4 @@ public class BoardController {
         boardService.글쓰기(saveDTO, 1);
         return "redirect:/";
     }
-
-    
-
 }
