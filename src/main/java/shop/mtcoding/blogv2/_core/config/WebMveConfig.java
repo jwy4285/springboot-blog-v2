@@ -1,9 +1,12 @@
 package shop.mtcoding.blogv2._core.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+
+import shop.mtcoding.blogv2._core.interceptor.LoginInterceptor;
 
 @Configuration // 설정파일
 public class WebMveConfig implements WebMvcConfigurer {
@@ -18,5 +21,14 @@ public class WebMveConfig implements WebMvcConfigurer {
             .resourceChain(true)
             .addResolver(new PathResourceResolver());
     }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginInterceptor())
+        .addPathPatterns("/pai/**")
+        .addPathPatterns("/user/update","/user/updateForm")
+        .addPathPatterns("/board/**")
+        .excludePathPatterns("/board/1");
     
+    }
 }
